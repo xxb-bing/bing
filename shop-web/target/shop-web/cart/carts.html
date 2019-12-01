@@ -1,0 +1,263 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>购物车</title>
+    <script src="/cart/carts/js/jquery.min.js"></script>
+    <!--<script type="text/javascript" src="/commons/js/jquery-3.3.1.min.js"></script>-->
+    <link rel="stylesheet" href="/cart/carts/css/reset.css">
+    <link rel="stylesheet" href="/cart/carts/css/carts.css">
+</head>
+<body>
+
+<section class="cartMain">
+
+    <div class="cartMain_hd">
+        <ul class="order_lists cartTop">
+            <li class="list_chk">
+                <!--所有商品全选-->
+                <input type="checkbox" id="all" class="whole_check" >
+                <label for="all" id="checkAllStyle"></label>
+                全选
+            </li>
+            <li class="list_con">商品信息</li>
+            <li class="list_price">单价</li>
+            <li class="list_amount">数量</li>
+            <li class="list_sum">金额</li>
+            <li class="list_op">操作</li>
+        </ul>
+    </div>
+
+    <div class="cartBox" id="cartShopShow">
+
+    </div>
+    <!--底部-->
+    <div class="bar-wrapper">
+        <div class="bar-right">
+            <div class="piece">已选商品<strong class="piece_num">0</strong></div>
+            <div class="totalMoney">共计: <strong class="total_text">0.00</strong></div>
+            <div class="calBtn"><a href="javascript:;" th:class="${counter!=0}?'btn_sty':''">结算</a></div>
+        </div>
+    </div>
+
+</section>
+<section class="model_bg"></section>
+<section class="my_model">
+    <p class="title">删除宝贝<span class="closeModel">X</span></p>
+    <p>您确认要删除该宝贝吗？</p>
+    <div class="opBtn"><a href="javascript:;" class="dialog-sure">确定</a><a href="javascript:;" class="dialog-close">关闭</a></div>
+</section>
+
+
+
+<script type="text/javascript">
+    $(function(){
+        var token="";
+        if(sessionStorage.getItem("token")){
+            token=sessionStorage.getItem("token");
+        }
+        $.ajaxSetup({ //发送请求前触发
+            contentType:"application/x-www-form-urlencoded;charset=utf-8",
+            complete: function (XMLHttpRequest,textStatus) {
+                var nologin=XMLHttpRequest.getResponseHeader("NOLOGIN");
+                if (nologin=="6001" ) {
+                    window.location.href="/login/index.html";
+                }
+            },
+            beforeSend: function (xhr) { //可以设置自定义标头
+                // alert("获取的token值:"+token);
+                xhr.setRequestHeader('token', token);
+            }
+        })
+        cartShopShow();
+    })
+    var cartShopShowHtml = "";
+    function  cartShopShow(){
+        $.ajax({
+            url:"http://localhost:8094/cart/cartShopShow",
+            dataType:"json",
+            type:"get",
+            success:function (result1) {
+             var  isChekcedCount = 0;
+             var result = result1.data.cartList
+             cartShopShowHtml+='<div class="order_content">';
+            for(var i=0;i<result.length;i++){
+                cartShopShowHtml+='<ul class="order_lists">';
+                cartShopShowHtml+=' <li class="list_chk">';
+                cartShopShowHtml += '<input type="checkbox"  class="son_check" value="'+result[i].shopId+'"  checked="'+result[i].isChecked+'">';
+                if(result[i].isChecked){
+                    cartShopShowHtml += '<label id="'+result[i].shopId+'"  class="mark"></label>';
+                    isChekcedCount++;
+                }else{
+                    cartShopShowHtml += '<label id="'+result[i].shopId+'"></label>';
+                }
+                cartShopShowHtml+='</li>';
+                cartShopShowHtml+='<li class="list_con">';
+                cartShopShowHtml+='<div class="list_img"><a href="javascript:void(0)"><img src="'+result[i].mainImg+'" alt=""></a></div>';
+                cartShopShowHtml+='<div class="list_text"><a href="javascript:void(0)"><span>'+result[i].shopName+'</span></a></div>';
+                cartShopShowHtml+='</li>';
+                cartShopShowHtml+='<li class="list_price">';
+                cartShopShowHtml+='<p class="price">￥<span>'+result[i].price+'</span></p>';
+                cartShopShowHtml+='</li>';
+                cartShopShowHtml+='<li class="list_amount">';
+                cartShopShowHtml+='<div class="amount_box">';
+                cartShopShowHtml+='<a href="javascript:void(0)" onclick="changeNumByMinus('+result[i].shopId+')" class="reduce reSty">-</a>';
+                cartShopShowHtml+='<input type="text"  class="sum"   value="'+result[i].count+'">';
+                cartShopShowHtml+='<a href="javascript:void(0)" onclick="changeNumByAdd('+result[i].shopId+')" class="plus">+</a>';
+                cartShopShowHtml+='</div>';
+                cartShopShowHtml+='</li>';
+                cartShopShowHtml+='<li class="list_sum">';
+                cartShopShowHtml+='<p class="sum_price">￥<span>'+result[i].subtotal+'</span></p>';
+                cartShopShowHtml+='</li>';
+                cartShopShowHtml+='<li class="list_op">';
+                cartShopShowHtml+='<p class="del"><a href="javascript:void(0)" onclick="deleteCartShop('+result[i].shopId+')" class="delBtn">移除商品</a></p>';
+                cartShopShowHtml+='</li>';
+                cartShopShowHtml+='</ul>';
+            }
+
+             cartShopShowHtml+='</div>';
+             cartShopShowHtml+='</div>';
+             $("#cartShopShow").html(cartShopShowHtml)
+
+            if (isChekcedCount != 0 && isChekcedCount == result1.length) {
+                $("#all").attr("checked", true);
+                $("#checkAllStyle").addClass("mark");
+            } else {
+                $("#all").attr("checked", false);
+                $("#checkAllStyle").removeClass("mark");
+            }
+
+            $(".piece_num").html(isChekcedCount+"件");
+            $(".total_text").html(result1.data.total+"元");
+
+            if (isChekcedCount > 0) {
+                $(".calBtn").find("a").addClass("btn_sty");
+            } else {
+                $(".calBtn").find("a").removeClass("btn_sty");
+                $(".total_text").html(0.00);
+            }
+
+            bindChecked();
+            }
+        })
+    }
+
+    function  deleteCartShop(shopId){
+        $.ajax({
+            url:"http://localhost:8094/cart/"+shopId,
+            dataType:"json",
+            type:"delete",
+            success:function (result) {
+                if(result.code == 200){
+                    cartShopShowHtml = "";
+                    $("#cartShopShow").html(cartShopShowHtml);
+                    cartShopShow();
+                }
+            }
+        })
+    }
+
+    function  bindChecked(){
+       $(".list_chk").click(function () {
+           var shopId = $(this).find("input").val();
+           $.ajax({
+               url:"http://localhost:8094/cart/changeCheck/",
+               dataType:"json",
+               type:"post",
+               data:{"shopId":shopId},
+               success:function (result) {
+                   if(result.code == 200){ww
+                       cartShopShowHtml = "";
+                       $("#cartShopShow").html(cartShopShowHtml);
+                       cartShopShow();
+                   }
+               }
+           })
+       })
+    }
+
+    function changeNumByAdd(shopId){
+        $.ajax({
+            url:"http://localhost:8094/cart/changeNumByAdd/",
+            dataType:"json",
+            type:"post",
+            data:{"shopId":shopId},
+            success:function (result) {
+                if(result.code == 200){
+                    cartShopShowHtml = "";
+                    $("#cartShopShow").html(cartShopShowHtml);
+                    cartShopShow();
+                }
+            }
+        })
+    }
+    //根据减号
+     function changeNumByMinus(shopId){
+           $.ajax({
+                 url:"http://localhost:8094/cart/changeNumByMinus/",
+                 dataType:"json",
+                 type:"post",
+                 data:{"shopId":shopId},
+                 success:function (result) {
+                     if(result.code == 200){
+                         cartShopShowHtml = "";
+                         $("#cartShopShow").html(cartShopShowHtml);
+                         cartShopShow();
+                     }
+                 }
+             })
+     }
+
+    /*$("#all").click(function () {
+        var label=$("label");
+        if(typeof($(this).attr("checked"))=="undefined"){
+            $("#checkAllStyle").addClass("mark");
+            $("#all").attr('checked', 'true');
+            for (var i = 1; i < label.length; i++) {
+                $.ajax({
+                    url:"http://localhost:8094/cart/allCheck",
+                    dataType:"json",
+                    type:"post",
+                    data: {
+                        "shopId": label[i].id
+                    },
+                    success:function (result) {
+                        if(result.code == 200){
+                            cartShopShowHtml = "";
+                            $("#cartShopShow").html(cartShopShowHtml);
+                            cartShopShow();
+                        }
+                    }
+                })
+            }
+        }else {
+            $("#checkAllStyle").removeClass("mark");
+            $('#all').removeAttr('checked');
+            for (var i = 1; i < label.length; i++) {
+                $.ajax({
+                    url:"http://localhost:8094/cart/allCheck",
+                    dataType:"json",
+                    type:"post",
+                    data: {
+                        "shopId": label[i].id
+                    },
+                    success:function (result) {
+                        if(result.code == 200){
+                            cartShopShowHtml = "";
+                            $("#cartShopShow").html(cartShopShowHtml);
+                            cartShopShow();
+                        }
+                    }
+                })
+            }
+        }
+    })*/
+
+
+</script>
+
+</body>
+</html>

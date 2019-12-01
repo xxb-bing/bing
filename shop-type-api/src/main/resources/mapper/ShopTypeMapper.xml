@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.fh.dao.ShopTypeDao">
+      <!--   <select id="queryTypeTreeByBrandId" resultType="com.fh.model.vo.ShopTypeVo" parameterType="java.lang.Integer">
+             	select id,pid,typeName,if(typeId is null ,'false','true') checked  from t_shop_type  tsy
+				left join
+				(select typeId from t_brand_type where brandId = #{brandId}) tbt
+				on tsy.id = tbt .typeId
+         </select>
+
+	      <select id="queryTypeNameByBrandId" resultType="java.util.HashMap" parameterType="java.lang.Integer">
+               select typeName,id from t_shop_type tsy
+			   where tsy.id in (
+			     select tbt.typeId from t_brand tb left join t_brand_type tbt on tb.id = tbt.brandId  where tbt.brandId = #{brandId}
+			   )
+		  </select>-->
+
+          <select id="queryChildrenTypeByParentId" parameterType="Integer" resultType="java.util.HashMap">
+				select * from t_shop_type where pid = #{typeId}
+		  </select>
+
+
+</mapper>

@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.fh.dao.BrandDao">
+    <cache-ref namespace="com.fh.dao.BrandDao"></cache-ref>
+   <!-- <select id="queryCount" resultType="java.lang.Long">
+       select count(distinct tb.id),tb.brandName from t_brand tb
+       LEFT JOIN t_brand_type tbt on tb.id = tbt.brandId
+       left join t_shop_type tst on tbt.typeId = tst.id
+    </select>
+
+    <select id="queryBrandPageList" resultType="com.fh.model.vo.BrandVo" >
+         select tb.id,tb.brandName,tb.telPhone,tb.website,tb.status,tb.logoUrl,GROUP_CONCAT(tst.typeName) typeName,tb.updateTime from t_brand tb
+         LEFT JOIN t_brand_type tbt on tb.id = tbt.brandId
+         left join t_shop_type tst on tbt.typeId = tst.id
+         GROUP BY tb.id
+         limit #{page.start},#{page.length}
+    </select>
+-->
+      <select id="queryBrandLogoByTypeId" resultType="java.util.HashMap" parameterType="Integer">
+			 select tb.logoUrl,tb.id  from t_shop_type tsy
+			 left join t_brand_type tbt on tsy.id = tbt.typeId
+			 left join  t_brand tb on tbt.brandId = tb.id
+			 where tsy.id = #{typeId}
+		</select>
+
+</mapper>

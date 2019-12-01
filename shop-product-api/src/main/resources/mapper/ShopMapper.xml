@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<mapper namespace="com.fh.dao.ShopDao">
+
+<!--<select id="queryShopPageListByTypeId" resultType="com.fh.model.vo.ShopVo" >
+    select tsp.name,tb.brandName,tsp.subtitle,tsp.main_img mainImg,tsp.sub_imgs subImgs,
+    tsp.detail,tsp.price,tsp.stock,tsp.status,tsp.create_time createTime,tsp.update_time updateTime,tst.typeName
+    from t_shop_product tsp left join t_shop_type_relation tstr on tsp.id = tstr.shopId
+    left join t_brand tb on tsp.brand_id = tb.id
+    left join t_shop_type tst on tstr.typeId = tst.id where tst.id = #{typeId}
+    limit #{page.start},#{page.length}
+</select>
+
+<select id="queryCount" resultType="java.lang.Long" parameterType="Integer" >
+    select  count(tsp.id)
+    from t_shop_product tsp left join t_shop_type_relation tstr on tsp.id = tstr.shopId
+    left join t_brand tb on tsp.brand_id = tb.id
+    left join t_shop_type tst on tstr.typeId = tst.id where tst.id = #{typeId}
+</select>
+
+
+<select id="queryShopPageListByBrandId" resultType="com.fh.model.vo.ShopVo" >
+    select tsp.id,tsp.name,tb.brandName,tsp.subtitle,tsp.main_img mainImg,tsp.sub_imgs subImgs,
+    tsp.detail,tsp.price,tsp.stock,tsp.status,tsp.create_time createTime,tsp.update_time updateTime,GROUP_CONCAT(tst.typeName) typeName
+    from t_shop_product tsp
+    left join t_brand tb on tsp.brand_id = tb.id
+    left join t_brand_type tbt on tbt.brandId = tb.id
+    left join t_shop_type tst on tst.id = tbt.typeId
+    where tb.id = #{brandId}
+    GROUP BY tb.id
+    limit #{page.start},#{page.length}
+</select>
+
+<select id="queryShopCountByBrand" resultType="java.lang.Long" parameterType="Integer" >
+     select count(distinct tsp.id)  from t_shop_product tsp
+    left join t_brand tb on tsp.brand_id = tb.id
+    left join t_brand_type tbt on tbt.brandId = tb.id
+    left join t_shop_type tst on tst.id = tbt.typeId
+     where tb.id = #{brandId}
+</select>-->
+
+<sql id="searchShop">
+    <where>
+        and tsp.status = 1
+        <if test="shopParameter.findTypeId != null">
+            and tstr.typeId = #{shopParameter.findTypeId}
+        </if>
+        <if test="shopParameter.brandId != null">
+            and tsp.brand_id =  #{shopParameter.brandId}
+        </if>
+    </where>
+</sql>
+
+
+<select id="queryShopCount" resultType="Long">
+        select count(distinct tsp.id)
+        from t_shop_product tsp
+		left join t_shop_type_relation tstr on tsp.id = tstr.shopId
+		<include refid="searchShop"></include>
+</select>
+
+<select id="queryShopList" resultType="com.fh.model.vo.ShopVo">
+        select distinct tsp.id, tsp.name,tsp.brand_id,tsp.subtitle,tsp.main_img mainImg,tsp.sub_imgs subImgs,
+        tsp.detail,tsp.price,tsp.stock,tsp.status,tsp.create_time createTime,tsp.update_time updateTime
+        from t_shop_product tsp
+		left join t_shop_type_relation tstr on tsp.id = tstr.shopId
+        <include refid="searchShop"></include>
+        limit #{page.start},#{page.length}
+</select>
+
+
+<select id="getShopByShopId" resultType="com.fh.model.vo.ShopVo" parameterType="Integer">
+        select distinct tsp.id, tsp.name,tsp.main_img mainImg,tsp.sub_imgs subImgs,tsp.price,tsp.stock,tsp.status
+        from t_shop_product tsp
+        where tsp.id = #{shopId}
+</select>
+
+
+</mapper>
