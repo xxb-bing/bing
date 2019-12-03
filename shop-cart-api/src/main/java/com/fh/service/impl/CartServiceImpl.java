@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -39,6 +40,7 @@ public class CartServiceImpl implements CartService {
         cartBean.setMainImg(shopData.getString("mainImg"));
         cartBean.setShopName(shopData.getString("name"));
         cartBean.setPrice(shopData.getBigDecimal("price"));
+        cartBean.setStock(shopData.getInteger("stock"));
 
         if(redisTemplate.opsForHash().hasKey(cartId,shopId)){
             CartBean cart = (CartBean) redisTemplate.opsForHash().get(cartId,shopId);
@@ -152,6 +154,39 @@ public class CartServiceImpl implements CartService {
             cart.setIsChecked(true);
         }
         redisTemplate.opsForHash().put(cartId,shopId,cart);
+    }
+
+    /**
+     * 查询订单商品
+     * @return
+     */
+    @Override
+    public Map<String, Object> queryCartShopOrder(String userPhone) {
+        //获取购物车的id
+        String cartId = (String) redisTemplate.opsForValue().get("cartid_" + userPhone);
+        //取出购物车数据
+        List<CartBean> cartList =redisTemplate.opsForHash().values(cartId);
+        List<CartBean> shopOrderList = new ArrayList<CartBean>();
+        BigDecimal bigDecimal = BigDecimal.valueOf(0.00);
+        for (CartBean cart:cartList){
+            if(cart.getIsChecked()){
+                bigDecimal = bigDecimal.add(cart.getSubtotal());
+                if(cart.getStock() > 0){
+                    cart.setIsStock(true);
+                }else{
+                    cart.setIsStock(false);
+                }
+                shopOrderList.add(cart);
+            }
+        }
+
+
+        Map<String, Object> map=new HashMap<>();
+        map.put("shopList",shopOrderList);
+        map.put("total",bigDecimal);
+        return map;
+
+
     }
 
 }

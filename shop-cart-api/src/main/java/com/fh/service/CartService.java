@@ -20,4 +20,6 @@ public interface CartService {
 
     void allCheck(String phone, Integer shopId);
 
+    Map<String, Object> queryCartShopOrder(String userPhone);
+
 }

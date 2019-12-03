@@ -22,4 +22,8 @@ public class CartBean implements Serializable {
 
     private  Integer  count;
 
+    private  Integer  stock;
+
+    private  Boolean  isStock;
+
 }
