@@ -166,6 +166,7 @@ public class CartServiceImpl implements CartService {
         String cartId = (String) redisTemplate.opsForValue().get("cartid_" + userPhone);
         //取出购物车数据
         List<CartBean> cartList =redisTemplate.opsForHash().values(cartId);
+
         List<CartBean> shopOrderList = new ArrayList<CartBean>();
         BigDecimal bigDecimal = BigDecimal.valueOf(0.00);
         for (CartBean cart:cartList){
@@ -179,14 +180,10 @@ public class CartServiceImpl implements CartService {
                 shopOrderList.add(cart);
             }
         }
-
-
         Map<String, Object> map=new HashMap<>();
         map.put("shopList",shopOrderList);
         map.put("total",bigDecimal);
         return map;
-
-
     }
 
 }
