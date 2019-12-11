@@ -62,6 +62,7 @@ public class LoginController {
          redisTemplate.opsForValue().set("cartid_" + phone, user.getCartId());
          redisTemplate.opsForValue().set("userId_" + phone, user.getId());
 
+
          Map<String,Object> map = new HashMap<String,Object>();
          map.put("phone",phone);
          String token = JwtUtils.createToken(map);

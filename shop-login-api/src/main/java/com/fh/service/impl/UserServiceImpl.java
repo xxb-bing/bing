@@ -42,11 +42,11 @@ public class UserServiceImpl implements UserService {
         queryWrapper.eq("phone",phone);
         UserPo userPo = userDao.selectOne(queryWrapper);
         if(userPo == null){
-            UserPo userPo1 = new UserPo();
-            userPo1.setPhone(phone);
-            userPo1.setLoginDate(new Date());
-            userPo1.setCartId(UUID.randomUUID().toString().replace("-",""));
-            userDao.insert(userPo1);
+            userPo =new UserPo();
+            userPo.setPhone(phone);
+            userPo.setLoginDate(new Date());
+            userPo.setCartId(UUID.randomUUID().toString().replace("-",""));
+            userDao.insert(userPo);
         }else{
             userPo.setLoginDate(new Date());
             userDao.updateById(userPo);

@@ -18,6 +18,10 @@ public class ResponseServer {
         this.message = message;
     }
 
+    public static ResponseServer error(Integer code,String message){
+        return new ResponseServer(code,message);
+    }
+
     public static ResponseServer error(){
         return new ResponseServer(ServerEnum.ERROR.getCode(),ServerEnum.ERROR.getMessage());
     }

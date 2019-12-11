@@ -1,6 +1,8 @@
 package com.fh.model.po;
 
+import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
+import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -12,7 +14,7 @@ import java.util.Date;
 @Data
 @TableName(value = "t_shop_order")
 public class OrderPo implements Serializable {
-    @TableField(value = "id")
+    @TableId(value = "id",type = IdType.INPUT)
     private String id;//订单id
 
     @TableField("userId")

@@ -1,6 +1,8 @@
 package com.fh.model.po;
 
+import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
+import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -12,7 +14,7 @@ import java.util.Date;
 @Data
 @TableName("t_paylog")
 public class Paylog implements Serializable {
-    @TableField(value = "outTradeNo")
+    @TableId(value = "outTradeNo",type = IdType.INPUT)
     private String  outTradeNo;//支付单号
 
     @TableField("orderId")
@@ -22,7 +24,7 @@ public class Paylog implements Serializable {
     private Integer  userId;//购买人id
 
     @TableField("transactionId")
-    private Integer  transactionId;// 事务id(用于分布式事务)
+    private String  transactionId;//微信支付订单号
 
     @TableField("createTime")
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")

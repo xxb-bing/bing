@@ -17,14 +17,14 @@
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel target="8">
-      <module name="shop-brand-api" target="8" />
-      <module name="shop-cart-api" target="8" />
-      <module name="shop-commons" target="8" />
-      <module name="shop-login-api" target="8" />
-      <module name="shop-order-api" target="8" />
-      <module name="shop-product-api" target="8" />
-      <module name="shop-type-api" target="8" />
-      <module name="shop-web" target="8" />
+      <module name="shop-brand-api" target="1.8" />
+      <module name="shop-cart-api" target="1.8" />
+      <module name="shop-commons" target="1.8" />
+      <module name="shop-login-api" target="1.8" />
+      <module name="shop-order-api" target="1.8" />
+      <module name="shop-product-api" target="1.8" />
+      <module name="shop-type-api" target="1.8" />
+      <module name="shop-web" target="1.7" />
     </bytecodeTargetLevel>
   </component>
 </project>

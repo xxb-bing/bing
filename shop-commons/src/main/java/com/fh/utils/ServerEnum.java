@@ -21,8 +21,12 @@ public enum ServerEnum {
     ,SERVER_CONNECT_ERROR(8001,"服务器连接超时")
     ,SERVER_BUSYNESS(8002,"服务器请求忙碌")
     ,SERVER_NO_EXCEPTION(8003,"服务器未知异常")
-    ,ORDER_STATUS_NOPAY(9001,"订单未支付")
+    ,ORDER_STATUS_NOPAY(100,"订单未支付")
+    ,ORDER_STATUS_SUCCESS(200,"订单支付成功")
     ,STOCK_ALL_NULL(9002,"库存全部为空")
+    ,CREATE_PAY_QRCODE_ERROR(10001,"创建支付二维码失败")
+    ,NO_ORDER_PAY(10002,"没有订单支付")
+    ,ORDER_PAY_TIMEOUT(10003,"订单支付超时")
     ,SUCCESS(200,"成功")
     ,ERROR(500,"失败")
     ;

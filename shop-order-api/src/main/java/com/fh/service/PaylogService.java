@@ -1,8 +1,11 @@
 package com.fh.service;
 
-import java.math.BigDecimal;
+import com.fh.utils.ResponseServer;
 
 public interface PaylogService {
-    BigDecimal getPayPrice(String orderId);
+
+    ResponseServer createPayQRCode(String phone, String outTradeNo);
+
+    ResponseServer checkPayStatus(String phone, String outTradeNo);
 
 }
